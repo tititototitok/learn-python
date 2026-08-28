@@ -21,13 +21,17 @@ else:
     print("目标很高，需要强技能支撑")
 
 
-# 猜数字小游戏基础版
-answer = 18
-guess = int(input("猜一个整数："))
+# 猜数字小游戏进阶版
 
-if guess == answer:
-    print("恭喜你，猜对了")
-elif guess > answer:
-    print("猜大了")
-else:
-    print("猜小了")
+answer = 18
+
+while True:
+    guess = int(input("猜一个整数："))
+
+    if guess == answer:
+        print("恭喜你，猜对了")
+        break
+    elif guess > answer:
+        print("猜大了")
+    else:
+        print("猜小了")
