@@ -82,8 +82,8 @@ print(scores)
 for s in scores:
     if s >= 60:
         print(f"及格：{s}")
-else:
-    print(f"不及格：{s}")
+    else:
+        print(f"不及格：{s}")
 
 average = sum(scores)/len(scores)
 print(f"平均分：{average}")
