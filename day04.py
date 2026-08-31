@@ -78,6 +78,7 @@ scores.pop()
 scores.remove(67)
 print(scores)
 
+print(scores)
 for s in scores:
     if s >= 60:
         print(f"及格：{s}")
