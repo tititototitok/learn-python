@@ -9,6 +9,9 @@ while count <= 5:
 for i in range(1,6):
     print(i)
 
+for i in range(6):
+    print(i)
+    
 running = True
 
 while running:
