@@ -1,4 +1,30 @@
-# int 是整数没小数点，float 是小数有小数点。除法 / 永远出 float。
+try:
+    score = int(input("输入成绩："))
+    print(f"成绩是{score}")
+except ValueError:
+    print("请输入数字")
+
+try:
+    with open("不存在的文件.txt", "r", encoding="utf-8")as f:
+        print(f.read())
+except FileNotFoundError:
+    print("文件不存在")
+
+import random
+print(random.randint(1, 100))  # 随机整数
+
+from datetime import datetime
+print(datetime.now())  # 当前时间
+
+from datetime import datetime
+
+def show_menu():
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"\n=== 学生成绩管理 ({now}) ===")
+
+show_menu()
+
+
 def add_student(students):
     name = input("请输入学生姓名：").strip()  # 去掉首尾空格
     if not name:
@@ -43,7 +69,7 @@ def average_score(students):
     total = sum(student["score"] for student in students)
     average = total / len(students)
     print(f"平均成绩: {average:.1f}")
-# :.1f = 保留 1 位小数，四舍五入，.2f = 保留 2 位小数，四舍五入
+
 
 def main():
     students = []
@@ -55,6 +81,8 @@ def main():
         print("4. 删除学生")
         print("5. 计算平均成绩")
         print("6. 退出")
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"\n=== 学生成绩管理 ({now}) ===")
         choice = input("请输入操作编号: ")
         
         if choice == "1":
@@ -73,4 +101,4 @@ def main():
         else:
             print("无效的操作编号，请重新输入")
 
-main()    # 现在，开始执行 main 函数。
+main()
