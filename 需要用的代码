@@ -1,0 +1,4 @@
+.\venv\Scripts\Activate.ps1   激活venv
+pip install fastapi uvicorn   装fastapi
+uvicorn main:app --reload     启动网页
+model_dump() 是 Python→字典，json.load() 是文件JSON→Python
