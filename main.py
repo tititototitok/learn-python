@@ -22,8 +22,11 @@ class Todo(BaseModel):
     done: bool = False
 
 @app.get("/todos")
-def get_todos():
-    return {"todos": load_todos()}
+def get_todos(done: bool = None, limit: int = 10, offset: int = 0):
+    todos = load_todos()
+    if done is not None:
+        todos = [t for t in todos if t["done"] == done]
+    return {"todos": todos[offset : offset + limit]}
 
 @app.get("/todos/{todo_id}")
 def get_todo(todo_id: int):
