@@ -17,9 +17,14 @@ def save_todos(todos):
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(todos, f, ensure_ascii=False, indent=2)
 
+class SubTask(BaseModel):
+    title: str
+    done: bool = False
+
 class Todo(BaseModel):
     title: str
     done: bool = False
+    subtasks: list[SubTask] = []
 
 @app.get("/todos")
 def get_todos(done: bool = None, limit: int = 10, offset: int = 0):
