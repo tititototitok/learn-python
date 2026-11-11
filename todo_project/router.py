@@ -1,46 +1,40 @@
-import json
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import APIRouter, Request, HTTPException
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from .schema import Todo
+from .storage import load_todos, save_todos
 
-app = FastAPI()
+router = APIRouter(prefix="/todos", tags=["待办"])
 
-DATA_FILE = "todos.json"
+# --- Day21: 统一异常处理 ---
+def register_exception_handlers(app):
+    @app.exception_handler(HTTPException)
+    async def http_exc_handler(request: Request, exc: HTTPException):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"code": exc.status_code, "message": exc.detail}
+        )
 
-def load_todos():
-    try:
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return []
+    @app.exception_handler(RequestValidationError)
+    async def validation_exc_handler(request: Request, exc: RequestValidationError):
+        return JSONResponse(
+            status_code=422,
+            content={"code": 422, "message": "参数校验失败", "errors": exc.errors()}
+        )
 
-def save_todos(todos):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(todos, f, ensure_ascii=False, indent=2)
+# --- 路由（逻辑和你旧版一致，路径去掉 /todos 前缀）---
+@router.get("")
+def get_todos():
+    return load_todos()
 
-class SubTask(BaseModel):
-    title: str
-    done: bool = False
-
-class Todo(BaseModel):
-    title: str
-    done: bool = False
-    subtasks: list[SubTask] = []
-
-@app.get("/todos")
-def get_todos(done: bool = None, limit: int = 10, offset: int = 0):
-    todos = load_todos()
-    if done is not None:
-        todos = [t for t in todos if t["done"] == done]
-    return {"todos": todos[offset : offset + limit]}
-
-@app.get("/todos/{todo_id}")
+@router.get("/{todo_id}")
 def get_todo(todo_id: int):
     todos = load_todos()
     if todo_id < 1 or todo_id > len(todos):
         raise HTTPException(status_code=404, detail="待办不存在")
     return todos[todo_id - 1]
 
-@app.post("/todos")
+@router.post("")
 def create_todo(todo: Todo):
     todos = load_todos()
     todo_dict = todo.model_dump()
@@ -49,7 +43,7 @@ def create_todo(todo: Todo):
     save_todos(todos)
     return {"message": "创建成功", "todo": todo_dict}
 
-@app.put("/todos/{todo_id}")
+@router.put("/{todo_id}")
 def update_todo(todo_id: int, todo: Todo):
     todos = load_todos()
     if todo_id < 1 or todo_id > len(todos):
@@ -60,7 +54,7 @@ def update_todo(todo_id: int, todo: Todo):
     save_todos(todos)
     return {"message": "修改成功", "todo": todo_dict}
 
-@app.delete("/todos/{todo_id}")
+@router.delete("/{todo_id}")
 def delete_todo(todo_id: int):
     todos = load_todos()
     if todo_id < 1 or todo_id > len(todos):
